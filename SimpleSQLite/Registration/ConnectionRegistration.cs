@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace TimeTracker.DataAccess.Registration
 {
+    // TODO: make public interface and internal implementation
     public class ConnectionRegistration
     {
         internal ConnectionRegistration() { }

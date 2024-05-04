@@ -14,6 +14,7 @@ namespace TimeTracker.DataAccess
 {
     // TODO: Fix all namespaces, and make them file scoped
     // TODO: remove unnecessary usings
+    // TODO: Make implementations internal
     public class DataAccessor : IDataAccessor
     {
         private readonly SQLiteAsyncConnection _db;
