@@ -12,7 +12,8 @@ using TimeTracker.Specifications.Base;
 
 namespace TimeTracker.DataAccess
 {
-    // TODO: Fix all namespaces
+    // TODO: Fix all namespaces, and make them file scoped
+    // TODO: remove unnecessary usings
     public class DataAccessor : IDataAccessor
     {
         private readonly SQLiteAsyncConnection _db;
