@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using TimeTracker.DataAccess.DataContracts;
+﻿using System.Linq.Expressions;
 
-namespace TimeTracker.Specifications.Base
+namespace Kildetoft.SimpleSQLite;
+
+public interface ISpecification<T> where T : IEntity
 {
-    public interface ISpecification<T> where T : IEntity
-    {
-        Expression<Func<T, bool>> IsSatisfied { get; }
-    }
+    Expression<Func<T, bool>> IsSatisfied { get; }
 }

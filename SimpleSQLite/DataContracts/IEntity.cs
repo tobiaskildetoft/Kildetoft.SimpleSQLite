@@ -1,4 +1,4 @@
-﻿namespace TimeTracker.DataAccess.DataContracts;
+﻿namespace Kildetoft.SimpleSQLite;
 
 public interface IEntity
 {
