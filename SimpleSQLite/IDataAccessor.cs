@@ -11,7 +11,4 @@ public interface IDataAccessor
     Task<IList<T>> Get<T>(IAllSpecification<T> specification) where T : IEntity, new();
     Task<T> Get<T>(IFirstSpecification<T> specification) where T : IEntity, new();
     Task<T?> Get<T>(IFirstOrDefaultSpecification<T> specification) where T : IEntity, new();
-    Task<IList<S>> Get<T, S>(ISelectAllSpecification<T, S> specification) where T : IEntity, new();
-    Task<S> Get<T, S>(ISelectFirstSpecification<T, S> specification) where T : IEntity, new();
-    Task<S?> Get<T, S>(ISelectFirstOrDefaultSpecification<T, S> specification) where T : IEntity, new();
 }
