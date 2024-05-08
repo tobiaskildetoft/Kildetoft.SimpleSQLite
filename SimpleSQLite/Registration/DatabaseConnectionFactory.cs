@@ -1,4 +1,6 @@
 ﻿using SQLite;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Kildetoft.SimpleSQLite.IoC;
 
@@ -27,5 +29,15 @@ internal static class DatabaseConnectionFactory
         {
             _connection.CreateTableAsync(type);
         }
+    }
+
+    internal static void AddIndex(string tableName, string attributeName, bool unique)
+    {
+        // TODO: Handle case where table has not been added before index
+        if (_connection == null)
+        {
+            throw new InvalidOperationException("Cannot add indexes before initializing the connection");
+        }
+        _connection.CreateIndexAsync(tableName, attributeName, unique);
     }
 }
