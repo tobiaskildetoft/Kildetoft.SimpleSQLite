@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSQLite", "SimpleSQLite\SimpleSQLite.csproj", "{2E5BD985-2AEC-428D-85D6-22BC7C3EBA49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSQLite", "SimpleSQLite\SimpleSQLite.csproj", "{2E5BD985-2AEC-428D-85D6-22BC7C3EBA49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSQLite.Tests", "SimpleSQLiteTests\SimpleSQLite.Tests.csproj", "{461A32CD-956F-4A2B-8667-5A9B7B11E2A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSQLite.Samples", "SimpleSQLite.SampleClasses\SimpleSQLite.Samples.csproj", "{1A1A298A-65D8-49D9-B401-78C2867A206C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{2E5BD985-2AEC-428D-85D6-22BC7C3EBA49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E5BD985-2AEC-428D-85D6-22BC7C3EBA49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E5BD985-2AEC-428D-85D6-22BC7C3EBA49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{461A32CD-956F-4A2B-8667-5A9B7B11E2A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{461A32CD-956F-4A2B-8667-5A9B7B11E2A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{461A32CD-956F-4A2B-8667-5A9B7B11E2A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{461A32CD-956F-4A2B-8667-5A9B7B11E2A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A1A298A-65D8-49D9-B401-78C2867A206C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1A298A-65D8-49D9-B401-78C2867A206C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1A298A-65D8-49D9-B401-78C2867A206C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1A298A-65D8-49D9-B401-78C2867A206C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
