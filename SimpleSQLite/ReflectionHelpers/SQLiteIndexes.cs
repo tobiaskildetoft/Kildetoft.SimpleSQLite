@@ -9,7 +9,6 @@ namespace Kildetoft.SimpleSQLite.ReflectionHelpers
 {
     public static class SQLiteIndexes
     {
-        internal const string IndexDefinitionName = "IndexDefinition";
         public static IEnumerable<Type> FromAssemblyContaining<T>()
         {
             var assembly = typeof(T).Assembly;

@@ -92,7 +92,7 @@ internal class ConnectionRegistration : IConnectionRegistration
     private string GetAttributeNameFromIndexType(Type indexType)
     {
         var indexObject = Activator.CreateInstance(indexType);
-        var indexDefinitionProperty = indexType.GetProperty(SQLiteIndexes.IndexDefinitionName);
+        var indexDefinitionProperty = indexType.GetProperty(IIndex.IndexDefinitionName);
         if (indexDefinitionProperty.GetValue(indexObject) is LambdaExpression expression)
         {
             return GetAttributeNameFromLambdaExpression(expression);

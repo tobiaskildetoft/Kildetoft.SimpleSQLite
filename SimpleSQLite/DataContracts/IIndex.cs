@@ -4,6 +4,7 @@ namespace Kildetoft.SimpleSQLite;
 
 public interface IIndex
 {
+    const string IndexDefinitionName = "IndexDefinition";
     bool Unique { get; }
 }
 
