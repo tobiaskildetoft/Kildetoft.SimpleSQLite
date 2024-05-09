@@ -1,6 +1,6 @@
 ﻿namespace Kildetoft.SimpleSQLite;
 
-public interface ITakeSpecification<T> : ISpecification<T> where T : IEntity
+public interface ITakeSpecification<T> : IAllSpecification<T> where T : IEntity
 {
     int NumberToTake { get; }
 }
