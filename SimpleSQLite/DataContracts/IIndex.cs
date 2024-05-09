@@ -2,8 +2,12 @@
 
 namespace Kildetoft.SimpleSQLite;
 
-public interface IIndex<T> where T : IEntity
+public interface IIndex
+{
+    bool Unique { get; }
+}
+
+public interface IIndex<T> : IIndex where T : IEntity
 {
     Expression<Func<T,object>> IndexDefinition { get; }
-    bool Unique { get; }
 }

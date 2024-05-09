@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using Kildetoft.SimpleSQLite.ReflectionHelpers;
+using SQLite;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -19,19 +20,45 @@ internal class ConnectionRegistration : IConnectionRegistration
 
     public IConnectionRegistration AddTable(Type entityType, bool allowUnusableTypes = false)
     {
-        return AddTables(new List<Type> { entityType }, allowUnusableTypes);
+        return AddTables([entityType], allowUnusableTypes);
+    }
+
+    public IConnectionRegistration AddIndexes(IEnumerable<Type> indexTypes)
+    {
+        foreach (var indexType in indexTypes)
+        {
+            // TODO: Make more thorough check that makes sure the index is a usable type
+            if (!SQLiteIndexes.IsIndex(indexType))
+            {
+                throw new NotSupportedException();
+                // TODO: custom exception with more info
+            }
+            var tableName = GetTableNameFromGenericIndexType(indexType);
+            var attributeName = GetAttributeNameFromIndexType(indexType);
+            var unique = GetUniqueFromIndexType(indexType);
+            DatabaseConnectionFactory.AddIndex(tableName, attributeName, unique);
+        }
+        return this;
+    }
+
+    public IConnectionRegistration AddIndex<T>() where T : IIndex<IEntity>
+    {
+        return AddIndex(typeof(T));
     }
 
     public IConnectionRegistration AddIndex(Type indexType)
     {
-        // TODO: methods for adding multiple, and methods for adding from assemblycontaining
-        if (Activator.CreateInstance(indexType) is IIndex<IEntity> index)
+        return AddIndexes([indexType]);
+    }
+
+    private bool GetUniqueFromIndexType(Type indexType)
+    {
+        if (Activator.CreateInstance(indexType) is IIndex index)
         {
-            var tableName = GetTableNameFromGenericIndexType(indexType);
-            var attributeName = GetAttributeNameFromIndex(index);
-            DatabaseConnectionFactory.AddIndex(tableName, attributeName, index.Unique);
+            return index.Unique;
         }
-        return this;
+        throw new NotSupportedException();
+        // TODO: Better exception (or maybe have this method assume it is an index based on it being private?
     }
 
     private string GetTableNameFromGenericIndexType(Type indexType)
@@ -42,9 +69,21 @@ internal class ConnectionRegistration : IConnectionRegistration
         return tableAttribute.Name;
     }
 
-    private string GetAttributeNameFromIndex(IIndex<IEntity> index)
+    private string GetAttributeNameFromIndexType(Type indexType)
     {
-        if (index.IndexDefinition.Body is MemberExpression memberExpression && memberExpression.Member is PropertyInfo propertyInfo)
+        var indexObject = Activator.CreateInstance(indexType);
+        var indexDefinitionProperty = indexType.GetProperty(SQLiteIndexes.IndexDefinitionName);
+        if (indexDefinitionProperty.GetValue(indexObject) is LambdaExpression expression)
+        {
+            return GetAttributeNameFromLambdaExpression(expression);
+        }
+        throw new NotSupportedException();
+        // TODO: Better custom exception
+    }
+
+    private string GetAttributeNameFromLambdaExpression(LambdaExpression expression)
+    {
+        if (expression.Body is MemberExpression memberExpression && memberExpression.Member is PropertyInfo propertyInfo)
         {
             return propertyInfo.Name;
         }

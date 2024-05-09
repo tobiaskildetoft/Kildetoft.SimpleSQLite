@@ -4,7 +4,7 @@ namespace Kildetoft.SimpleSQLite.IoC;
 
 public static class SQLiteEntities
 {
-    public static IEnumerable<Type> FromAssemblyContaining<T>() where T : IEntity, new()
+    public static IEnumerable<Type> FromAssemblyContaining<T>()
     {
         var assembly = typeof(T).Assembly;
         return FromAssembly(assembly);
