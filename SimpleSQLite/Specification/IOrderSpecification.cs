@@ -2,8 +2,8 @@
 
 namespace Kildetoft.SimpleSQLite;
 
-public interface IOrderSpecification<T, S> : ISpecification<T> where T : IEntity where S : IComparable
+public interface IOrderSpecification<T> : ISpecification<T> where T : IEntity
 {
-    Expression<Func<T, S>> OrderExpression { get; }
+    Expression<Func<T, IComparable>> OrderExpression { get; }
     OrderType OrderType { get; }
 }

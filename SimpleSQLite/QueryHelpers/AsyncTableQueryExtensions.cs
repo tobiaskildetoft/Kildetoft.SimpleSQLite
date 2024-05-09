@@ -14,7 +14,7 @@ internal static class AsyncTableQueryExtensions
         return query.Where(whereSpecification.WhereExpression);
     }
 
-    internal static AsyncTableQuery<T> OrderBy<T, S>(this AsyncTableQuery<T> query, IOrderSpecification<T, S> orderSpecification) where T : IEntity, new() where S : IComparable
+    internal static AsyncTableQuery<T> OrderBy<T>(this AsyncTableQuery<T> query, IOrderSpecification<T> orderSpecification) where T : IEntity, new()
     {
         if (orderSpecification.OrderType == OrderType.Ascending)
         {
@@ -39,7 +39,7 @@ internal static class AsyncTableQueryExtensions
         {
             query = query.Where(whereSpecification);
         }
-        if (specification is IOrderSpecification<T, IComparable> orderSpecification)
+        if (specification is IOrderSpecification<T> orderSpecification)
         {
             query = query.OrderBy(orderSpecification);
         }
