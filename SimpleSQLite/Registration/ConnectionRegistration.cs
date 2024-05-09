@@ -7,6 +7,25 @@ namespace Kildetoft.SimpleSQLite.IoC;
 
 internal class ConnectionRegistration : IConnectionRegistration
 {
+    public IConnectionRegistration AddTablesFromAssemblyContaining<T>()
+    {
+        var types = SQLiteEntities.FromAssemblyContaining<T>();
+        return AddTables(types);
+    }
+
+    public IConnectionRegistration AddIndexFromAssemblyContaining<T>()
+    {
+        var types = SQLiteIndexes.FromAssemblyContaining<T>();
+        return AddIndexes(types);
+    }
+
+    public IConnectionRegistration AddAllFromAssemblyContaining<T>()
+    {
+        AddTablesFromAssemblyContaining<T>();
+        AddIndexFromAssemblyContaining<T>();
+        return this;
+    }
+
     public IConnectionRegistration AddTables(IEnumerable<Type> entityTypes, bool allowUnusableTypes = false)
     {
         if (!allowUnusableTypes && entityTypes.FirstOrDefault(t => !t.IsUsableEntity()) is Type unusableTypeType)
