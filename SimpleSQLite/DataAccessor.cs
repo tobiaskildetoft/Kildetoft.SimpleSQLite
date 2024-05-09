@@ -6,7 +6,7 @@ namespace Kildetoft.SimpleSQLite;
 
 internal class DataAccessor : IDataAccessor
 {
-    private readonly SQLiteAsyncConnection _db;
+    private readonly ISQLiteAsyncConnection _db;
 
     public DataAccessor()
     {
