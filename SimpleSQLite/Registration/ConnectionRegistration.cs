@@ -7,6 +7,7 @@ namespace Kildetoft.SimpleSQLite.IoC;
 
 internal class ConnectionRegistration : IConnectionRegistration
 {
+    // TODO: add option to all methods for allowing unusable types?
     public IConnectionRegistration AddTablesFromAssemblyContaining<T>()
     {
         var types = SQLiteEntities.FromAssemblyContaining<T>();
