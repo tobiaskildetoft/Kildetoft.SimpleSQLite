@@ -27,3 +27,8 @@ The specifications can also be used to define:
 - How to sort the data, using the IOrderSpecification
 - Whether to skip some of the data, using the ISkipSpecification
 - How many items to take, using the ITakeSpecification (which extends the IAllSpecification)
+
+## Samples and testing
+See the SimpleSQLite.SampleClasses project for examples of creating Entities and Specifications.
+See the SimpleSQLite.Tests project for examples of how to test Specifications using the provided DataAccessMock
+
