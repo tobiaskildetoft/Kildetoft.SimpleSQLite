@@ -13,7 +13,9 @@ This will return an IConnectionRegistration, on which it is possible to add tabl
 
 ## CRUD operations
 The IDataAccessor interface exposes the basic CRUD operations, via the Create, GetById, Update, and Delete methods.
-It also exposes the Get method, which takes an ISpecification, which determines what it returns.
+
+## Querying data
+IDataAccessor also exposes the Get method, which is used for querying the data. It takes an ISpecification, which determines what it returns.
 
 The return type is based on whether the ISpecification is:
 - an IAllSpecification (return all results), 
