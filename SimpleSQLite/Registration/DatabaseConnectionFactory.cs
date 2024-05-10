@@ -12,6 +12,7 @@ internal static class DatabaseConnectionFactory
     internal static SQLiteAsyncConnection GetConnection()
     {
         _initializationConnection?.Close();
+        _initializationConnection = null;
         return _connection ?? throw new NotImplementedException();
         // TODO: Custom exception here
     }
@@ -26,7 +27,7 @@ internal static class DatabaseConnectionFactory
     {
         if (_initializationConnection == null)
         {
-            throw new InvalidOperationException("Cannot add tables before initializing the connection");
+            throw new InvalidOperationException("Cannot add tables before initializing the connection or after starting to use the connection");
         }
         foreach (var type in entityTypes)
         {
@@ -39,7 +40,7 @@ internal static class DatabaseConnectionFactory
         // TODO: Handle case where table has not been added before index
         if (_initializationConnection == null)
         {
-            throw new InvalidOperationException("Cannot add indexes before initializing the connection");
+            throw new InvalidOperationException("Cannot add indexes before initializing the connection or after starting to use the connection");
         }
         _initializationConnection.CreateIndex(tableName, attributeName, unique);
     }
