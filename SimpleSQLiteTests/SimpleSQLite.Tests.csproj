@@ -30,7 +30,10 @@
 
   <ItemGroup>
     <Folder Include="ConnectionRegistrationTests\" />
-    <Folder Include="SpecificationTests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleSQLite.SampleClasses\SimpleSQLite.Samples.csproj" />
   </ItemGroup>
 
 </Project>
