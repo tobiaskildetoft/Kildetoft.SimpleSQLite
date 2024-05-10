@@ -3,7 +3,7 @@
 public interface IConnectionRegistration
 {
     IConnectionRegistration AddTablesFromAssemblyContaining<T>();
-    IConnectionRegistration AddIndexFromAssemblyContaining<T>();
+    IConnectionRegistration AddIndexesFromAssemblyContaining<T>();
     IConnectionRegistration AddAllFromAssemblyContaining<T>();
 
     IConnectionRegistration AddTables(IEnumerable<Type> entityTypes, bool allowUnusableTypes = false);

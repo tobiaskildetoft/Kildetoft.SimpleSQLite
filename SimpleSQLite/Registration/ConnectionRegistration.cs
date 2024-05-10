@@ -14,7 +14,7 @@ internal class ConnectionRegistration : IConnectionRegistration
         return AddTables(types);
     }
 
-    public IConnectionRegistration AddIndexFromAssemblyContaining<T>()
+    public IConnectionRegistration AddIndexesFromAssemblyContaining<T>()
     {
         var types = SQLiteIndexes.FromAssemblyContaining<T>();
         return AddIndexes(types);
@@ -23,7 +23,7 @@ internal class ConnectionRegistration : IConnectionRegistration
     public IConnectionRegistration AddAllFromAssemblyContaining<T>()
     {
         AddTablesFromAssemblyContaining<T>();
-        AddIndexFromAssemblyContaining<T>();
+        AddIndexesFromAssemblyContaining<T>();
         return this;
     }
 
