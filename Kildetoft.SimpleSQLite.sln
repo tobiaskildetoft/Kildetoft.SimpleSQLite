@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSQLite", "SimpleSQLite\SimpleSQLite.csproj", "{2E5BD985-2AEC-428D-85D6-22BC7C3EBA49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSQLite.Tests", "SimpleSQLiteTests\SimpleSQLite.Tests.csproj", "{461A32CD-956F-4A2B-8667-5A9B7B11E2A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSQLite.Tests", "SimpleSQLite.Tests\SimpleSQLite.Tests.csproj", "{461A32CD-956F-4A2B-8667-5A9B7B11E2A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSQLite.Samples", "SimpleSQLite.SampleClasses\SimpleSQLite.Samples.csproj", "{1A1A298A-65D8-49D9-B401-78C2867A206C}"
 EndProject

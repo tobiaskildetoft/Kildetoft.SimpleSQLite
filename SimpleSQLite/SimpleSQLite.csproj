@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Kildetoft.SimpleSQLite</RootNamespace>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageId>Kildetoft.$(AssemblyName)</PackageId>
+    <Title>Kildetoft.SimpleSQLite</Title>
+    <Version>$(VersionPrefix)</Version>
   </PropertyGroup>
 
   <ItemGroup>
