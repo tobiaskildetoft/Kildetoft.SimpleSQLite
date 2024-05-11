@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Kildetoft.SimpleSQLite.IoC;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Kildetoft.SimpleSQLite.ReflectionHelpers
+namespace Kildetoft.SimpleSQLite.ReflectionHelpers;
+
+internal static class SQLiteIndexes
 {
-    public static class SQLiteIndexes
+    internal static IEnumerable<Type> FromAssemblyContaining<T>()
     {
-        public static IEnumerable<Type> FromAssemblyContaining<T>()
-        {
-            var assembly = typeof(T).Assembly;
-            return FromAssembly(assembly);
-        }
+        var assembly = typeof(T).Assembly;
+        return FromAssembly(assembly);
+    }
 
-        public static IEnumerable<Type> FromAssembly(Assembly assembly)
-        {
-            return assembly.ExportedTypes.Where(t => IsIndex(t));
-        }
+    internal static IEnumerable<Type> FromAssembly(Assembly assembly)
+    {
+        return assembly.ExportedTypes.Where(IsIndex);
+    }
 
-        internal static bool IsIndex(Type type)
-        {
-            return type.GetInterfaces().Any(x =>
-            x.IsGenericType &&
-            x.GetGenericTypeDefinition() == typeof(IIndex<>));
-        }
+    internal static bool IsIndex(Type type)
+    {
+        return
+        type.GetConstructor(Type.EmptyTypes) != null &&
+        type.GetInterfaces().Any(x =>
+        x.IsGenericType &&
+        x.GetGenericTypeDefinition() == typeof(IIndex<>) &&
+        x.GetGenericArguments().First().IsUsableEntity());
     }
 }

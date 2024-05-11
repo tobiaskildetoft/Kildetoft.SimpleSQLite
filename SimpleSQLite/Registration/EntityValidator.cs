@@ -7,8 +7,6 @@ internal static class EntityValidator
 {
     internal static bool IsUsableEntity(this Type entityType)
     {
-        // TODO: Could it be possible to skip all this and instead add the attributes
-        // TODO: Maybe completely remove the dependency on anything external for the entities
         if (!entityType.IsAssignableFrom(typeof(IEntity)))
         {
             return false;
@@ -18,6 +16,10 @@ internal static class EntityValidator
             return false;
         }
         if (entityType.GetProperty("Id")?.GetCustomAttribute<PrimaryKeyAttribute>() == null)
+        {
+            return false;
+        }
+        if (entityType.GetConstructor(Type.EmptyTypes) == null)
         {
             return false;
         }

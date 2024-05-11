@@ -1,4 +1,5 @@
-﻿using Kildetoft.SimpleSQLite.ReflectionHelpers;
+﻿using Kildetoft.SimpleSQLite.Exceptions;
+using Kildetoft.SimpleSQLite.ReflectionHelpers;
 using SQLite;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -7,7 +8,6 @@ namespace Kildetoft.SimpleSQLite.IoC;
 
 internal class ConnectionRegistration : IConnectionRegistration
 {
-    // TODO: add option to all methods for allowing unusable types?
     public IConnectionRegistration AddTablesFromAssemblyContaining<T>()
     {
         var types = SQLiteEntities.FromAssemblyContaining<T>();
@@ -27,41 +27,27 @@ internal class ConnectionRegistration : IConnectionRegistration
         return this;
     }
 
-    public IConnectionRegistration AddTables(IEnumerable<Type> entityTypes, bool allowUnusableTypes = false)
+    public IConnectionRegistration AddTable<T>() where T: IEntity, new()
     {
-        if (!allowUnusableTypes && entityTypes.FirstOrDefault(t => !t.IsUsableEntity()) is Type unusableTypeType)
+        return AddTable(typeof(T));
+    }
+
+    public IConnectionRegistration AddTable(Type entityType)
+    {
+        return AddTables([entityType]);
+    }
+
+    public IConnectionRegistration AddTables(IEnumerable<Type> entityTypes)
+    {
+        if (entityTypes.FirstOrDefault(t => !t.IsUsableEntity()) is Type unusableType)
         {
-            throw new InvalidOperationException($"Type {unusableTypeType.Name} is not valid for use as a SimpleSQLite entity");
-            // TODO: Link to documentation?
+            throw new UnsupportedEntityImplementationException($"Type {unusableType.Name} is not valid for use as a SimpleSQLite entity");
         }
-        DatabaseConnectionFactory.AddTables(entityTypes.Where(t => t.IsUsableEntity()));
+        DatabaseConnectionFactory.AddTables(entityTypes);
         return this;
     }
 
-    public IConnectionRegistration AddTable(Type entityType, bool allowUnusableTypes = false)
-    {
-        return AddTables([entityType], allowUnusableTypes);
-    }
-
-    public IConnectionRegistration AddIndexes(IEnumerable<Type> indexTypes)
-    {
-        foreach (var indexType in indexTypes)
-        {
-            // TODO: Make more thorough check that makes sure the index is a usable type
-            if (!SQLiteIndexes.IsIndex(indexType))
-            {
-                throw new NotSupportedException();
-                // TODO: custom exception with more info
-            }
-            var tableName = GetTableNameFromGenericIndexType(indexType);
-            var attributeName = GetAttributeNameFromIndexType(indexType);
-            var unique = GetUniqueFromIndexType(indexType);
-            DatabaseConnectionFactory.AddIndex(tableName, attributeName, unique);
-        }
-        return this;
-    }
-
-    public IConnectionRegistration AddIndex<T>() where T : IIndex<IEntity>
+    public IConnectionRegistration AddIndex<T>() where T : IIndex, new()
     {
         return AddIndex(typeof(T));
     }
@@ -71,34 +57,48 @@ internal class ConnectionRegistration : IConnectionRegistration
         return AddIndexes([indexType]);
     }
 
+    public IConnectionRegistration AddIndexes(IEnumerable<Type> indexTypes)
+    {
+        foreach (var indexType in indexTypes)
+        {
+            if (!SQLiteIndexes.IsIndex(indexType))
+            {
+                throw new UnsupportedIndexImplementationException($"The supplied type {indexType.Name} does not implement IIndex<T> for an IEntity T");
+            }
+            var tableName = GetTableNameFromGenericIndexType(indexType);
+            var attributeName = GetAttributeNameFromIndexType(indexType);
+            var unique = GetUniqueFromIndexType(indexType);
+            DatabaseConnectionFactory.AddIndex(tableName, attributeName, unique);
+        }
+        return this;
+    }
+
     private bool GetUniqueFromIndexType(Type indexType)
     {
         if (Activator.CreateInstance(indexType) is IIndex index)
         {
             return index.Unique;
         }
-        throw new NotSupportedException();
-        // TODO: Better exception (or maybe have this method assume it is an index based on it being private?
+        throw new UnsupportedIndexImplementationException($"The supplied type {indexType.Name} could not be created as an IIndex");
     }
 
     private string GetTableNameFromGenericIndexType(Type indexType)
     {
-        // TODO: null handling and some try-catch
         var entitytype = indexType.GetGenericArguments().First();
         var tableAttribute = entitytype.GetCustomAttribute<TableAttribute>();
-        return tableAttribute.Name;
+
+        return tableAttribute!.Name;
     }
 
     private string GetAttributeNameFromIndexType(Type indexType)
     {
         var indexObject = Activator.CreateInstance(indexType);
         var indexDefinitionProperty = indexType.GetProperty(IIndex.IndexDefinitionName);
-        if (indexDefinitionProperty.GetValue(indexObject) is LambdaExpression expression)
+        if (indexDefinitionProperty?.GetValue(indexObject) is LambdaExpression expression)
         {
             return GetAttributeNameFromLambdaExpression(expression);
         }
-        throw new NotSupportedException();
-        // TODO: Better custom exception
+        throw new UnsupportedIndexImplementationException($"The field {IIndex.IndexDefinitionName} on the type {indexType.Name} is not a LambdaExpression");
     }
 
     private string GetAttributeNameFromLambdaExpression(LambdaExpression expression)
@@ -107,12 +107,6 @@ internal class ConnectionRegistration : IConnectionRegistration
         {
             return propertyInfo.Name;
         }
-        throw new NotSupportedException();
-        // TODO: Throw proper custom exception with proper info
+        throw new UnsupportedIndexImplementationException($"The LambdaExpression {expression} does not represent accessing a property on the entity");
     }
-
-    // TODO: Option to add indexes
-    // TODO: Possible to add indexes based on specifications? Seems doable, but probably not worth it, as it is better to be explicit about index creation
-
-    // TODO: Method that adds all entities and indexes from an assembly based on a type from that assembly. What will be a good name for that?
 }

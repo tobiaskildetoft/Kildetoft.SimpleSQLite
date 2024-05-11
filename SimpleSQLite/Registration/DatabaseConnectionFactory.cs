@@ -1,6 +1,5 @@
-﻿using SQLite;
-using System.Linq.Expressions;
-using System.Reflection;
+﻿using Kildetoft.SimpleSQLite.Exceptions;
+using SQLite;
 
 namespace Kildetoft.SimpleSQLite.IoC;
 
@@ -13,8 +12,7 @@ internal static class DatabaseConnectionFactory
     {
         _initializationConnection?.Close();
         _initializationConnection = null;
-        return _connection ?? throw new NotImplementedException();
-        // TODO: Custom exception here
+        return _connection ?? throw new NotInitializedException("The connection was accessed before being initialized");
     }
 
     internal static void Initialize(string connectionString)
@@ -37,7 +35,6 @@ internal static class DatabaseConnectionFactory
 
     internal static void AddIndex(string tableName, string attributeName, bool unique)
     {
-        // TODO: Handle case where table has not been added before index
         if (_initializationConnection == null)
         {
             throw new InvalidOperationException("Cannot add indexes before initializing the connection or after starting to use the connection");

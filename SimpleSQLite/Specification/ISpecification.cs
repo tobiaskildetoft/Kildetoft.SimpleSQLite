@@ -1,7 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿namespace Kildetoft.SimpleSQLite;
 
-namespace Kildetoft.SimpleSQLite;
-
-public interface ISpecification<T> where T : IEntity
+/// <summary>
+/// Base interface for specifications
+/// Should not be directly implemented. Instead use the various extensions
+/// </summary>
+public interface ISpecification<T> where T : IEntity, new()
 {
 }
