@@ -1,19 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <RootNamespace>Kildetoft.SimpleSQLite</RootNamespace>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <PackageId>Kildetoft.$(AssemblyName)</PackageId>
-    <Title>Kildetoft.SimpleSQLite</Title>
-    <Version>$(VersionPrefix)</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>Kildetoft.SimpleSQLite</RootNamespace>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<PackageId>Kildetoft.SimpleSQLite</PackageId>
+		<Title>Kildetoft.SimpleSQLite</Title>
+		<Version>$(VersionPrefix)</Version>
+		<Authors>Tobias Kildetoft</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Description>Easy to setup wrapper for SQLite using specifications</Description>
+		<Copyright>Copyright (c) Tobias Kildetoft 2024.</Copyright>
+		<PackageProjectUrl>https://github.com/tobiaskildetoft/Kildetoft.SimpleSQLite</PackageProjectUrl>
+		<PackageTags>sqlite;data;database;spec;specification</PackageTags>
+		
+		<PackageVersion>1.0.0</PackageVersion>
+		<PackageReleaseNotes>Initial stable version. See README for usage.</PackageReleaseNotes>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<None Include="..\README.md" Pack="true" PackagePath="\"/>
+	</ItemGroup>
 
 </Project>
