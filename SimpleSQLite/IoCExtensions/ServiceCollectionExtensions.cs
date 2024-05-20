@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
         // TODO: Possible to use this database for logging with the users chosen logging?
         DatabaseConnectionFactory.Initialize(connectionString);
         collection.AddSingleton<IDataAccessor, DataAccessor>();
+        collection.AddSingleton<IAsyncDataAccessor, AsyncDataAccessor>();
         return new ConnectionRegistration();
     }
 }
