@@ -17,8 +17,12 @@
 		<PackageProjectUrl>https://github.com/tobiaskildetoft/Kildetoft.SimpleSQLite</PackageProjectUrl>
 		<PackageTags>sqlite;data;database;spec;specification</PackageTags>
 		
-		<PackageVersion>1.0.0</PackageVersion>
-		<PackageReleaseNotes>Initial stable version. See README for usage.</PackageReleaseNotes>
+		<PackageVersion>2.0.0</PackageVersion>
+		<PackageReleaseNotes>
+			Breaking change from version 1:
+			The previous asynchronous methods for interacting with data have been moved to the new IAsyncDataAccessor interface, and renamed with Async suffixes to match the standard naming conventions.
+			The IDataAccessor interface now exposes synchronous versions of the same methods.
+		</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>
