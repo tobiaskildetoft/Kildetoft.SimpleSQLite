@@ -10,9 +10,11 @@ namespace Kildetoft.SimpleSQLite.TestHelpers;
 public class DataAccessMock<T> : IDisposable where T : IEntity, new()
 {
     private readonly string _databaseName;
-    private readonly ISQLiteAsyncConnection _connection;
+    private readonly ISQLiteConnection _connection;
+    private readonly ISQLiteAsyncConnection _asyncConnection;
     private bool _disposed;
     public IDataAccessor DataAccessor { get; private set; }
+    public IAsyncDataAccessor AsyncDataAccessor { get; private set; }
     /// <summary>
     /// Initialize a connection with a table for entities of type T, containing all the supplied entities initially
     /// </summary>
@@ -23,11 +25,13 @@ public class DataAccessMock<T> : IDisposable where T : IEntity, new()
         DatabaseConnectionFactory.AddTables([typeof(T)]);
 
         DataAccessor = new DataAccessor();
+        AsyncDataAccessor = new AsyncDataAccessor();
         _connection = DatabaseConnectionFactory.GetConnection();
+        _asyncConnection = DatabaseConnectionFactory.GetAsyncConnection();
 
         foreach (var entity in entities)
         {
-            DataAccessor.Create(entity).GetAwaiter().GetResult();
+            DataAccessor.Create(entity);
         }
 
         // TODO: Add support for indexes to be able to also test these
@@ -47,7 +51,8 @@ public class DataAccessMock<T> : IDisposable where T : IEntity, new()
         {
             return;
         }
-        _connection.CloseAsync().GetAwaiter().GetResult();
+        _connection.Close();
+        _asyncConnection.CloseAsync().GetAwaiter().GetResult();
         File.Delete(_databaseName);
         _disposed = true;
     }
