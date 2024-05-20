@@ -8,7 +8,9 @@ These classes must have the Table attribure from sqlite-net, as well as the Prim
 
 For each index desired, create a generic implementation of the IIndex<T> interface, where T is the IEntity representing the table for the index. Add the necessary choice of whether the index should be unique, as well as a LambdaExpression as the IndexDefinition that defines which property the index should be created on.
 
-The main interface for interacting with the data will be the IDataAccessor. This is registered in an IServiceCollection by using the supplied extension method AddSimpleSQLite, providing it with the connection string for the database file to be used.
+The main interfaces for interacting with the data will be the IDataAccessor and IAsyncDataAccessor, depending on whether synchronous or asynchronous operations are needed.
+Anywhere in the following where something is mentioned for IDataAccessor, a similar statement will hold for IAsyncDataAccessor, with the appropriate modifications for async methods.
+This is registered in an IServiceCollection by using the supplied extension method AddSimpleSQLite, providing it with the connection string for the database file to be used.
 This will return an IConnectionRegistration, on which it is possible to add tables and indexes. The simplest way is via the methods AddTablesFromAssemblyContaining<T>, AddIndexesFromAssemblyContaining<T>, and AddAllFromAssemblyContaining<T>. These will find all classes in the assemblies containing the specified type, and add either tables, indexes or both, to the database based on what it finds.
 
 ## CRUD operations
