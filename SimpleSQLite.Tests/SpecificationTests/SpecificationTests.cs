@@ -85,12 +85,12 @@ internal class SpecificationTests
         // Assert
         Assert.That(resultAsync, Is.Not.Null);
         Assert.That(result, Is.Not.Null);
-        Assert.That(result.Count(), Is.EqualTo(2));
-        Assert.That(result.Count(), Is.EqualTo(result.Count()));
-        Assert.That(result.First().Name, Is.EqualTo(SecondLargestName));
-        Assert.That(result.First().Name, Is.EqualTo(result.First().Name));
-        Assert.That(result.Skip(1).First().Name, Is.EqualTo(ThirdLargestName));        
-        Assert.That(result.Skip(1).First().Name, Is.EqualTo(result.Skip(1).First().Name));
+        Assert.That(resultAsync.Count(), Is.EqualTo(2));
+        Assert.That(result.Count(), Is.EqualTo(resultAsync.Count()));
+        Assert.That(resultAsync.First().Name, Is.EqualTo(SecondLargestName));
+        Assert.That(result.First().Name, Is.EqualTo(resultAsync.First().Name));
+        Assert.That(resultAsync.Skip(1).First().Name, Is.EqualTo(ThirdLargestName));        
+        Assert.That(result.Skip(1).First().Name, Is.EqualTo(resultAsync.Skip(1).First().Name));
     }
 
     [Test]
