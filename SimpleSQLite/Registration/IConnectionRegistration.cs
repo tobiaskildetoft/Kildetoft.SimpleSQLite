@@ -1,8 +1,13 @@
-﻿namespace Kildetoft.SimpleSQLite.IoC;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Kildetoft.SimpleSQLite.IoC;
 
 public interface IConnectionRegistration
 {
-    // TODO: Add custom exceptions and reference these in summaries
+    /// <summary>
+    /// The original IServiceCollection used for calling AddSimpleSQLite
+    /// </summary>
+    IServiceCollection ServiceCollection { get; }
 
     /// <summary>
     /// Add all tables defined by implementations of IEntity in the assembly containing the generic type

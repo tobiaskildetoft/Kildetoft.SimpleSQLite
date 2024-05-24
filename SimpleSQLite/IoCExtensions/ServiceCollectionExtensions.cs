@@ -16,6 +16,6 @@ public static class ServiceCollectionExtensions
         DatabaseConnectionFactory.Initialize(connectionString);
         collection.AddSingleton<IDataAccessor, DataAccessor>();
         collection.AddSingleton<IAsyncDataAccessor, AsyncDataAccessor>();
-        return new ConnectionRegistration();
+        return new ConnectionRegistration(collection);
     }
 }

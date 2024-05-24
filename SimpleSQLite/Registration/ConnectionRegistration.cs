@@ -1,5 +1,6 @@
 ﻿using Kildetoft.SimpleSQLite.Exceptions;
 using Kildetoft.SimpleSQLite.ReflectionHelpers;
+using Microsoft.Extensions.DependencyInjection;
 using SQLite;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -8,6 +9,13 @@ namespace Kildetoft.SimpleSQLite.IoC;
 
 internal class ConnectionRegistration : IConnectionRegistration
 {
+    internal ConnectionRegistration(IServiceCollection serviceCollection)
+    {
+        ServiceCollection = serviceCollection;
+    }
+
+    public IServiceCollection ServiceCollection { get; private set; }
+
     public IConnectionRegistration AddTablesFromAssemblyContaining<T>()
     {
         var types = SQLiteEntities.FromAssemblyContaining<T>();
