@@ -1,5 +1,8 @@
 ﻿using Kildetoft.SimpleSQLite.Exceptions;
+using Kildetoft.SimpleSQLite.ReflectionHelpers;
 using SQLite;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Kildetoft.SimpleSQLite.IoC;
 
@@ -21,9 +24,16 @@ internal static class DatabaseConnectionFactory
 
     internal static void Initialize(string connectionString)
     {
+        try
+        {
+            _asyncConnection = new SQLiteAsyncConnection(connectionString);
+            _connection = new SQLiteConnection(connectionString);
+        }
+        catch (SQLiteException e)
+        {
+            throw new InvalidConnectionStringException("SQLite was not able to create a connection using the provided connection string. See inner Exception for details", e);
+        }
         _connectionString = connectionString;
-        _asyncConnection = new SQLiteAsyncConnection(_connectionString);
-        _connection = new SQLiteConnection(_connectionString);
     }
 
     internal static void AddTables(IEnumerable<Type> entityTypes)
@@ -34,11 +44,20 @@ internal static class DatabaseConnectionFactory
         }
         foreach (var type in entityTypes)
         {
+            // TODO: What if a table already exists, but the model has been changed?
+            // TODO: Find good way to handle this
             _connection.CreateTable(type);
         }
     }
 
-    internal static void AddIndex(string tableName, string attributeName, bool unique)
+    internal static void AddIndex(Type indexType)
+    {
+        var indexDefinition = SQLiteIndexes.GetIndexDefinition(indexType);
+
+        AddIndex(indexDefinition.TableName!, indexDefinition.AttributeName!, indexDefinition.Unique);
+    }
+
+    private static void AddIndex(string tableName, string attributeName, bool unique)
     {
         if (_connection == null)
         {
@@ -47,35 +66,9 @@ internal static class DatabaseConnectionFactory
         _connection.CreateIndex(tableName, attributeName, unique);
     }
 
-    internal static void CloseConnections(bool deleteDatabase = false)
-    {
-        CloseAsyncConnection();
-        CloseSyncConnection();
-
-        if (deleteDatabase)
-        {
-            DeleteDatabase();
-        }
-    }
-
-    private static void CloseSyncConnection()
+    internal static void CloseConnections()
     {
         _connection?.Close();
         _connection = null;
-    }
-
-    private static void CloseAsyncConnection()
-    {
-        _asyncConnection?.CloseAsync();
-        _asyncConnection = null;
-    }
-
-    private static void DeleteDatabase()
-    {
-        if (string.IsNullOrEmpty(_connectionString))
-        {
-            return;
-        }
-        File.Delete(_connectionString);
     }
 }
