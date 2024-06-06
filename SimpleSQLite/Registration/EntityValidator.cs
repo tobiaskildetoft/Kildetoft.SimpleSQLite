@@ -7,7 +7,7 @@ internal static class EntityValidator
 {
     internal static bool IsUsableEntity(this Type entityType)
     {
-        if (!entityType.IsAssignableFrom(typeof(IEntity)))
+        if (!entityType.IsAssignableTo(typeof(IEntity)))
         {
             return false;
         }
