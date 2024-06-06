@@ -25,15 +25,11 @@ public static class ServiceCollectionExtensions
     /// Does not delete any database files
     /// </summary>
     /// <exception cref="ReadOnlyException">If the IServiceCollection is readonly</exception>
-    public static IServiceCollection RemoveSimpleSQLite(this IServiceCollection collection, bool deleteDatabase = false)
+    public static IServiceCollection RemoveSimpleSQLite(this IServiceCollection collection)
     {
-        if (collection.IsReadOnly)
-        {
-            throw new ReadOnlyException($"{nameof(collection)} is read only");
-        }
         collection.RemoveDataAccessor();
         collection.RemoveAsyncDataAccessor();
-        DatabaseConnectionFactory.CloseConnections(deleteDatabase);
+        DatabaseConnectionFactory.CloseConnections();
         return collection;
     }
 
