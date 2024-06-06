@@ -28,8 +28,9 @@ internal static class TableQueryExtensions
         return query.Skip(skipSpecification.NumberToSkip);
     }
 
-    internal static TableQuery<T> ApplySpecification<T>(this TableQuery<T> query, ISpecification<T> specification) where T : IEntity, new()
+    internal static TableQuery<T> ApplySpecification<T>(this TableQuery<T> originalQuery, ISpecification<T> specification) where T : IEntity, new()
     {
+        var query = originalQuery.Clone<T>();
         if (specification is IWhereSpecification<T> whereSpecification)
         {
             query = query.Where(whereSpecification);
