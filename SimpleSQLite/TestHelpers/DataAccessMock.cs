@@ -18,23 +18,38 @@ public class DataAccessMock<T> : IDisposable where T : IEntity, new()
     /// <summary>
     /// Initialize a connection with a table for entities of type T, containing all the supplied entities initially
     /// </summary>
-    public DataAccessMock(IEnumerable<T> entities)
+    public DataAccessMock(IEnumerable<T>? entities = null, IEnumerable<IIndex<T>>? indexes = null)
     {
-        _databaseName = $"{Guid.NewGuid()}.db";
-        DatabaseConnectionFactory.Initialize(_databaseName);
-        DatabaseConnectionFactory.AddTables([typeof(T)]);
-
-        DataAccessor = new DataAccessor();
-        AsyncDataAccessor = new AsyncDataAccessor();
-        _connection = DatabaseConnectionFactory.GetConnection();
-        _asyncConnection = DatabaseConnectionFactory.GetAsyncConnection();
-
-        foreach (var entity in entities)
+        try
         {
-            DataAccessor.Create(entity);
-        }
+            _databaseName = $"{Guid.NewGuid()}.db";
+            DatabaseConnectionFactory.Initialize(_databaseName);
 
-        // TODO: Add support for indexes to be able to also test these
+            _connection = DatabaseConnectionFactory.GetConnection();
+            _asyncConnection = DatabaseConnectionFactory.GetAsyncConnection();
+
+            DatabaseConnectionFactory.AddTables([typeof(T)]);
+            DataAccessor = new DataAccessor();
+            AsyncDataAccessor = new AsyncDataAccessor();
+
+            foreach (var index in indexes ?? Enumerable.Empty<IIndex<T>>())
+            {
+                DatabaseConnectionFactory.AddIndex(index.GetType());
+            }
+
+            foreach (var entity in entities ?? Enumerable.Empty<T>())
+            {
+                DataAccessor.Create(entity);
+            }
+        }
+        catch
+        {
+            _connection?.Close();
+            _asyncConnection?.CloseAsync();
+            File.Delete(_databaseName!);
+
+            throw;
+        }
     }
 
     ~DataAccessMock() => Dispose(false);
