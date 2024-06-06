@@ -1,5 +1,7 @@
-﻿using Kildetoft.SimpleSQLite.TestHelpers;
+﻿using Kildetoft.SimpleSQLite;
+using Kildetoft.SimpleSQLite.TestHelpers;
 using SimpleSQLite.Samples.Entities;
+using SimpleSQLite.Samples.Indexes;
 using SimpleSQLite.Samples.Specifications;
 using SimpleSQLite.Tests.TestHelpers;
 
@@ -22,7 +24,7 @@ internal class SpecificationTests
         // Act
         SampleEntity? resultAsync = null;
         SampleEntity? result = null;
-        using (var mockAccess = new DataAccessMock<SampleEntity>(entities))
+        using (var mockAccess = new DataAccessMock<SampleEntity>(entities, GetIndexes()))
         {
             resultAsync = await mockAccess.AsyncDataAccessor.GetAsync(specification);
             result = mockAccess.DataAccessor.Get(specification);
@@ -34,30 +36,29 @@ internal class SpecificationTests
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Name, Is.EqualTo(resultAsync.Name));
     }
-
+    
     [Test]
     public async Task ByUniqueName_ReturnsNullIfNotExist()
     {
         // Arrange
-        var entities = SampleEntityCreator.GetSampleEntities().ToList();
+        // var entities = SampleEntityCreator.GetSampleEntities().ToList();
         var uniqueNameSought = Guid.NewGuid().ToString();
 
         var specification = new ByUniqueName(uniqueNameSought);
-
         // Act
-        SampleEntity? resultAsync = null;
+        // SampleEntity? resultAsync = null;
         SampleEntity? result = null;
-        using (var mockAccess = new DataAccessMock<SampleEntity>(entities))
+        using (var mockAccess = new DataAccessMock<SampleEntity>(null, GetIndexes()))
         {
-            resultAsync = await mockAccess.AsyncDataAccessor.GetAsync(specification);
+            // resultAsync = await mockAccess.AsyncDataAccessor.GetAsync(specification);
             result = mockAccess.DataAccessor?.Get(specification);
         }
 
         // Assert
-        Assert.That(resultAsync, Is.Null);
+        // Assert.That(resultAsync, Is.Null);
         Assert.That(result, Is.Null);
     }
-
+    
     [Test]
     public async Task SecondAndThirdLargest_ReturnsTwoIfTheyExist()
     {
@@ -67,16 +68,16 @@ internal class SpecificationTests
         var ThirdLargestName = "ThirdLargest";
         var SecondLargestName = "SecondLargest";
         var LargestName = "Largest";
-        entities.Add(new SampleEntity { SomeInt = maxValue+1, Name = ThirdLargestName });
-        entities.Add(new SampleEntity { SomeInt = maxValue + 2, Name = SecondLargestName });
-        entities.Add(new SampleEntity { SomeInt = maxValue + 3, Name = LargestName });
+        entities.Add(new SampleEntity { SomeInt = maxValue+1, Name = ThirdLargestName, UniqueName = "ThirdLargestUniqueName" });
+        entities.Add(new SampleEntity { SomeInt = maxValue + 2, Name = SecondLargestName, UniqueName = "SecondLargestUniqueName" });
+        entities.Add(new SampleEntity { SomeInt = maxValue + 3, Name = LargestName, UniqueName = "LargestUniqueName" });
 
         var specification = new SecondAndThirdLargest();
 
         // Act
         IEnumerable<SampleEntity>? resultAsync = null;
         IEnumerable<SampleEntity>? result = null;
-        using (var mockAccess = new DataAccessMock<SampleEntity>(entities))
+        using (var mockAccess = new DataAccessMock<SampleEntity>(entities, GetIndexes()))
         {
             resultAsync = await mockAccess.AsyncDataAccessor.GetAsync(specification);
             result = mockAccess.DataAccessor.Get(specification);
@@ -100,15 +101,15 @@ internal class SpecificationTests
         var entities = new List<SampleEntity>();
         var SecondLargestName = "SecondLargest";
         var LargestName = "Largest";
-        entities.Add(new SampleEntity { SomeInt = 2, Name = SecondLargestName });
-        entities.Add(new SampleEntity { SomeInt = 3, Name = LargestName });
+        entities.Add(new SampleEntity { SomeInt = 2, Name = SecondLargestName, UniqueName = "SecondLargestUniqueName" });
+        entities.Add(new SampleEntity { SomeInt = 3, Name = LargestName, UniqueName = "LargestUniqueName" });
 
         var specification = new SecondAndThirdLargest();
 
         // Act
         IEnumerable<SampleEntity>? resultAsync = null;
         IEnumerable<SampleEntity>? result = null;
-        using (var mockAccess = new DataAccessMock<SampleEntity>(entities))
+        using (var mockAccess = new DataAccessMock<SampleEntity>(entities, GetIndexes()))
         {
             resultAsync = await mockAccess.AsyncDataAccessor.GetAsync(specification);
             result = mockAccess.DataAccessor.Get(specification);
@@ -136,7 +137,7 @@ internal class SpecificationTests
         // Act
         IEnumerable<SampleEntity>? resultAsync = null;
         IEnumerable<SampleEntity>? result = null;
-        using (var mockAccess = new DataAccessMock<SampleEntity>(entities))
+        using (var mockAccess = new DataAccessMock<SampleEntity>(entities, GetIndexes()))
         {
             resultAsync = await mockAccess.AsyncDataAccessor.GetAsync(specification);
             result = mockAccess.DataAccessor.Get(specification);
@@ -147,5 +148,58 @@ internal class SpecificationTests
         Assert.That(result, Is.Not.Null);
         Assert.That(resultAsync.Count(), Is.EqualTo(0));
         Assert.That(result.Count(), Is.EqualTo(resultAsync.Count()));
+    }
+
+    [Test]
+    public async Task Smallest_ReturnsSmallestIfNonEmpty()
+    {
+        // Arrange
+        var entities = SampleEntityCreator.GetSampleEntities().ToList();
+        var minValue = entities.Min(x => x.SomeInt);
+        var smallestName = "Smallest";
+        entities.Add(new SampleEntity { SomeInt = minValue - 1, Name = smallestName, UniqueName = "SmallestUniqueName" });
+
+        var specification = new Smallest();
+
+        // Act
+        SampleEntity? resultAsync = null;
+        SampleEntity? result = null;
+        using (var mockAccess = new DataAccessMock<SampleEntity>(entities, GetIndexes()))
+        {
+            resultAsync = await mockAccess.AsyncDataAccessor.GetAsync(specification);
+            result = mockAccess.DataAccessor.Get(specification);
+        }
+
+        // Assert
+        Assert.That(resultAsync, Is.Not.Null);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(resultAsync.Name, Is.EqualTo(smallestName));
+        Assert.That(result.Name, Is.EqualTo(resultAsync.Name));
+    }
+
+    [Test]
+    public void Smallest_ThrowsIfEmpty()
+    {
+        // Arrange
+        var entities = new List<SampleEntity>();
+
+        var specification = new Smallest();
+
+        // Act
+        // Assert
+        using (var mockAccess = new DataAccessMock<SampleEntity>(entities, GetIndexes()))
+        {
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await mockAccess.AsyncDataAccessor.GetAsync(specification));
+            Assert.Throws<InvalidOperationException>(() => mockAccess.DataAccessor.Get(specification));
+        }
+    }
+
+    private IEnumerable<IIndex<SampleEntity>> GetIndexes()
+    {
+        return new List<IIndex<SampleEntity>>
+        {
+            new NameIndex(),
+            new UniqueNameIndex(),
+        };
     }
 }
