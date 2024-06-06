@@ -12,12 +12,6 @@ internal static class SQLiteEntities
 
     internal static IEnumerable<Type> FromAssembly(Assembly assembly)
     {
-        return assembly.ExportedTypes.Where(t => t.IsAssignableFrom(typeof(IEntity)));
-    }
-
-    internal static IEnumerable<Type> FromAssemblyNamed(string assemblyName)
-    {
-        var assembly = Assembly.Load(assemblyName);
-        return FromAssembly(assembly);
+        return assembly.ExportedTypes.Where(t => t.IsAssignableTo(typeof(IEntity)));
     }
 }
